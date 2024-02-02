@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
+      locale: Locale("en"),
       debugShowCheckedModeBanner: false,
       home: const MyHomePage(),
     );
@@ -66,9 +67,22 @@ class _MyHomePageState extends State<MyHomePage> {
       token: jwt,
 
       configOverrides: {
-        "preferredLanguage": 'ar',
+        // "lang": 'ar',
+        // "defaultLanguage": "ar",
+
+        "transcribeWithAppLanguage":false,
+        "transcription.useAppLanguage":false,
+        "preferredTranscribeLanguage":"en-US",
+        "transcription.preferredLanguage": "en-US",
+        "transcription": {
+          "enabled": true,
+          "useAppLanguage": false,
+          "translationLanguagesHead": ["en"],
+          "preferredLanguage": "en-US"
+        }
       },
       featureFlags: {
+
         /// disable user to share screen
         "android.screensharing.enabled": false,
         /**
@@ -125,9 +139,25 @@ class _MyHomePageState extends State<MyHomePage> {
     await JitsiMeetWrapper.joinMeeting(
         options: options,
         listener: JitsiMeetingListener(
-          onConferenceWillJoin: (url) => print(""),
-          onConferenceJoined: (url) => print(""),
-          onConferenceTerminated: (url, error) => print(""),
+          onConferenceWillJoin: (url) {
+            print("*** listener onConferenceWillJoin ***");
+            print("url $url");
+          },
+          onConferenceJoined: (url) {
+            print("*** listener onConferenceJoined ***");
+            print("url $url");
+          },
+          onConferenceTerminated: (url, error) {
+            print("*** listener onConferenceTerminated ***");
+            print("url $url");
+            print("error $error");
+          },
+          onClosed: () {
+            print("*** listener onClosed ***");
+          },
+          onOpened: () {
+            print("*** listener onOpened ***");
+          },
         ));
   }
 
